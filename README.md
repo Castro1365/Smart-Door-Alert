@@ -5,7 +5,7 @@
 |--------|-------------------------------|-------------------------------|
 | Castro N. Fokou | Hardware & Sensor Setup | Documentation |
 | Rupesh Nepal | UI & API Design | Storage & MQTT Integration |
-
+Rupesh will also help with testing the UI and REST API functions.
 ---
 
 ## Problem Description
