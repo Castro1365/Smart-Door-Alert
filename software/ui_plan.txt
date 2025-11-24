@@ -1,1 +1,2 @@
 UI and API planning file.
+The Ui will show the doors open/closed status using MQTT.
