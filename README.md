@@ -37,3 +37,23 @@ We plan to build a Smart Door Alert system using an ESP32 and a magnetic reed sw
 ---
 
 ## Planned Repository Structure
+/Documentation
+    - Stores wiring sketch and project diagrams.
+
+/hardware
+    - Contains ESP32 code and sensor-related files.
+
+/software
+    - Contains UI files, MQTT subscriber code, and REST API logic.
+
+/data
+    - Will be used for storing logs or history data.
+
+/tests
+    - Will contain any scripts used for testing the system.
+
+README.md
+    - Main documentation file for the project.
+
+api_plan.txt
+    - Notes for MQTT topics and REST API endpoints.
