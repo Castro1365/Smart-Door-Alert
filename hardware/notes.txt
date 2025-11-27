@@ -1,1 +1,80 @@
 Hardware planning file.
+
+1. Hardware Setup
+
+Connect the reed switch module:
+
+S → D2, + → 3V3, – → GND
+
+Connect the LED:
+
+LED(+) → 330Ω resistor → D5
+
+LED(–) → GND
+
+Power the ESP8266 using a USB cable.
+
+2. Upload the ESP8266 Firmware
+
+Open Arduino IDE and install:
+
+ESP8266 Boards
+
+PubSubClient (MQTT library)
+
+Open the firmware file in the /software folder.
+
+Update your Wi-Fi name and password in the code.
+
+Select NodeMCU 1.0 (ESP-12E Module) and the correct COM port.
+
+Click Upload.
+
+Open Serial Monitor (115200 baud) and confirm:
+
+“WiFi connected”
+
+“MQTT connected”
+
+“Door OPEN/CLOSED”
+
+“Published: open/closed”
+
+3. Run the Python MQTT Subscriber (UI)
+
+Make sure Python is installed.
+
+Install MQTT client library:
+
+py -m pip install paho-mqtt
+
+
+Run the subscriber script:
+
+py subscriber.py
+
+
+The console will display:
+
+Door Status Update → open / closed
+
+4. Test the System End-to-End
+
+Bring a magnet close to the reed switch → CLOSED
+
+LED turns OFF
+
+Serial Monitor prints “Door CLOSED”
+
+Python UI prints “closed”
+
+Move magnet away → OPEN
+
+LED turns ON
+
+Serial Monitor prints “Door OPEN”
+
+Python UI prints “open”
+
+This confirms that data flows correctly through the system:
+Sensor → ESP8266 → MQTT Broker → Python UI.
