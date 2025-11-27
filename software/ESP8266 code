@@ -1,0 +1,92 @@
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+
+// --------- PINS ----------
+const int REED_PIN = D2;  // Reed switch module S
+const int LED_PIN  = D5;  // LED
+
+// --------- WIFI ----------
+const char* WIFI_SSID     = "iPhone";
+const char* WIFI_PASSWORD = "Rupesh98";
+
+// --------- MQTT ----------
+const char* MQTT_SERVER   = "test.mosquitto.org";  // or your laptop broker IP
+const int   MQTT_PORT     = 1883;
+const char* MQTT_CLIENTID = "SmartDoorNodeMCU_Castro";
+const char* MQTT_TOPIC    = "smartdoor/castro_rupesh/status";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+int lastDoorState = -1;
+
+void connectWiFi() {
+  Serial.print("Connecting to WiFi");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void connectMQTT() {
+  while (!client.connected()) {
+    Serial.print("Connecting to MQTT...");
+    if (client.connect(MQTT_CLIENTID)) {
+      Serial.println("connected");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 2 seconds");
+      delay(2000);
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(REED_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+
+  connectWiFi();
+  client.setServer(MQTT_SERVER, MQTT_PORT);
+  connectMQTT();
+
+  Serial.println("Smart Door Alert MQTT started");
+}
+
+void loop() {
+  if (!client.connected()) {
+    connectMQTT();
+  }
+  client.loop();
+
+  int doorState = digitalRead(REED_PIN);
+
+  if (doorState != lastDoorState) {
+    lastDoorState = doorState;
+
+    const char* msg;
+    if (doorState == LOW) {
+      // closed
+      msg = "closed";
+      digitalWrite(LED_PIN, LOW);
+      Serial.println("Door CLOSED");
+    } else {
+      // open
+      msg = "open";
+      digitalWrite(LED_PIN, HIGH);
+      Serial.println("Door OPEN");
+    }
+
+    client.publish(MQTT_TOPIC, msg);
+    Serial.print("Published: ");
+    Serial.println(msg);
+  }
+
+  delay(100);
+}
