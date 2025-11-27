@@ -1,0 +1,28 @@
+// PIN SETUP
+const int REED_PIN = D2;   // Reed switch signal
+const int LED_PIN  = D5;   // LED
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(REED_PIN, INPUT_PULLUP);  
+  pinMode(LED_PIN, OUTPUT);
+
+  Serial.println("Smart Door Alert Test Started");
+}
+
+void loop() {
+  int doorState = digitalRead(REED_PIN);
+
+  if (doorState == LOW) {  
+    // Magnet touching reed → door closed
+    digitalWrite(LED_PIN, LOW);
+    Serial.println("Door CLOSED");
+  } else {
+    // Magnet separated → door open
+    digitalWrite(LED_PIN, HIGH);
+    Serial.println("Door OPEN");
+  }
+
+  delay(300);
+}
