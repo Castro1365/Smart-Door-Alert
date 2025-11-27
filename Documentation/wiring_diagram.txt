@@ -1,1 +1,2 @@
-Wiring diagram will be added during Check-In 2.
+The following wiring diagram illustrates the complete hardware setup for the Smart Door Monitoring System.
+It shows how the ESP32, Magnetic Reed Switch, LED indicators, and power connections are connected.
