@@ -29,12 +29,29 @@ We plan to build a Smart Door Alert system using an ESP32 and a magnetic reed sw
 ## Planned Hardware
 | Component | Purpose |
 |------------|---------|
-| ESP32 Board | IoT controller |
+|  ESP8266 NodeMCU | IoT controller |
 | Magnetic Reed Switch | Detect open/closed state |
 | LED or Buzzer | Local alert output |
 | Jumper wires | Connection |
 
 ---
+### Software Components
+- **Device Firmware**: Arduino-based ESP8266 code (PubSubClient library)
+- **MQTT Broker**: test.mosquitto.org (public broker for testing)
+- **Monitoring UI**: Python script using Paho MQTT client
+- **Data Flow**: Sensor → ESP8266 → MQTT Broker → Python UI
+
+  2. **Software Requirements**:
+   - Arduino IDE with ESP8266 board support
+   - Python 3.6+
+   - Required libraries:
+     ```bash
+     # For ESP8266 (via Arduino Library Manager)
+     - PubSubClient by Nick O'Leary
+     
+     # For Python UI
+     pip install paho-mqtt
+     ```
 
 ## Planned Repository Structure
 /Documentation
