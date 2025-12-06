@@ -97,7 +97,7 @@ Functions:
 
 ### **2. Arduino Test Code**
 Located at:
-/software/door_node_test
+/software/Arduino test code
 
 Purpose:
 - Validate sensor and LED before adding MQTT logic.
@@ -106,7 +106,7 @@ Purpose:
 
 ### **3. Python MQTT Subscriber (UI)**
 Located at:
-/software/subscriber.py
+/software/Subscriber.py
 
 Displays real-time door status updates received from MQTT.
 
