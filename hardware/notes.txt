@@ -1,80 +1,95 @@
-Hardware planning file.
+Smart Door Alert – Hardware Setup Notes
+--------------------------------------
 
 1. Hardware Setup
 
-Connect the reed switch module:
+Reed Switch Wiring:
+• S  → D2  (signal pin)
+• +  → 3V3 (power)
+• –  → GND (ground)
 
-S → D2, + → 3V3, – → GND
+LED Wiring:
+• LED(+) → 330Ω resistor → D5
+• LED(–) → GND
 
-Connect the LED:
+Power:
+• ESP8266 powered through USB cable
 
-LED(+) → 330Ω resistor → D5
+Logic:
+• Reed = LOW   → Door CLOSED  → LED OFF
+• Reed = HIGH  → Door OPEN    → LED ON
 
-LED(–) → GND
 
-Power the ESP8266 using a USB cable.
+2. Uploading the ESP8266 Firmware
 
-2. Upload the ESP8266 Firmware
+Required Arduino IDE Setup:
+• Install “ESP8266 Boards” from Boards Manager
+• Install “PubSubClient” library (MQTT)
 
-Open Arduino IDE and install:
+Steps:
+1. Open firmware file:
+   /software/ESP8266 code/esp8266_firmware.ino
+2. Update Wi-Fi name + password in the code.
+3. Select board:
+   NodeMCU 1.0 (ESP-12E Module)
+4. Select correct COM port.
+5. Click **Upload**.
 
-ESP8266 Boards
+Verify on Serial Monitor (115200 baud):
+• “WiFi connected”
+• “MQTT connected”
+• “Door OPEN/CLOSED”
+• “Published: open/closed”
 
-PubSubClient (MQTT library)
 
-Open the firmware file in the /software folder.
+3. Running the Python MQTT Subscriber (UI)
 
-Update your Wi-Fi name and password in the code.
+Requirements:
+• Python 3 installed
 
-Select NodeMCU 1.0 (ESP-12E Module) and the correct COM port.
-
-Click Upload.
-
-Open Serial Monitor (115200 baud) and confirm:
-
-“WiFi connected”
-
-“MQTT connected”
-
-“Door OPEN/CLOSED”
-
-“Published: open/closed”
-
-3. Run the Python MQTT Subscriber (UI)
-
-Make sure Python is installed.
-
-Install MQTT client library:
-
+Install MQTT package:
 py -m pip install paho-mqtt
 
+Run subscriber:
+py Subscriber.py
 
-Run the subscriber script:
+Expected console output:
+• Connected to MQTT Broker
+• Door Status Update → open / closed
 
-py subscriber.py
+
+4. Full System Testing (End-to-End)
+
+Test procedure:
+
+A. Bring magnet close to reed switch:
+   → Door CLOSED
+   → LED turns OFF
+   → Serial: "Door CLOSED"
+   → Python UI: "closed"
+
+B. Move magnet away:
+   → Door OPEN
+   → LED turns ON
+   → Serial: "Door OPEN"
+   → Python UI: "open"
+
+This confirms correct data flow:
+Sensor → ESP8266 → MQTT Broker → Python UI Subscriber
 
 
-The console will display:
+5. Troubleshooting Notes
 
-Door Status Update → open / closed
+If Serial Monitor shows unreadable text:
+• Ensure baud rate = 115200
 
-4. Test the System End-to-End
+If MQTT messages do not appear:
+• Check Wi-Fi credentials
+• Ensure broker = test.mosquitto.org
+• Verify that the topic matches:
+  smartdoor/castro_rupesh/status
 
-Bring a magnet close to the reed switch → CLOSED
+If LED does not turn ON/OFF:
+• Recheck wiring on D5
+• Ensure resistor is in series with LED(+)
 
-LED turns OFF
-
-Serial Monitor prints “Door CLOSED”
-
-Python UI prints “closed”
-
-Move magnet away → OPEN
-
-LED turns ON
-
-Serial Monitor prints “Door OPEN”
-
-Python UI prints “open”
-
-This confirms that data flows correctly through the system:
-Sensor → ESP8266 → MQTT Broker → Python UI.
