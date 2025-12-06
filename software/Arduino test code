@@ -1,28 +1,48 @@
+/*
+  Smart Door Alert – Hardware Test (door_node_test.ino)
+  Team: Castro & Rupesh
+  Board: NodeMCU 1.0 (ESP-12E, ESP8266)
+
+  Purpose:
+    - Simple hardware test for the Smart Door Alert project.
+    - Verifies the wiring of the reed switch on D2 and the LED on D5.
+    - Prints "Door OPEN" / "Door CLOSED" in the Serial Monitor
+      and turns the LED on when the door is OPEN.
+
+  Behaviour:
+    - Magnet close to reed switch  -> input goes LOW  -> door = CLOSED, LED OFF.
+    - Magnet away from reed switch -> input goes HIGH -> door = OPEN,  LED ON.
+*/
+
 // PIN SETUP
-const int REED_PIN = D2;   // Reed switch signal
-const int LED_PIN  = D5;   // LED
+const int REED_PIN = D2;   // Digital input from reed switch module (S pin)
+const int LED_PIN  = D5;   // Digital output to LED (through resistor)
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200);             // Serial monitor for debugging
 
-  pinMode(REED_PIN, INPUT_PULLUP);  
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(REED_PIN, INPUT_PULLUP);  // Internal pull-up: idle HIGH, pulled LOW when switch closes
+  pinMode(LED_PIN, OUTPUT);         // LED pin as output
 
-  Serial.println("Smart Door Alert Test Started");
+  digitalWrite(LED_PIN, LOW);       // Start with LED OFF
+
+  Serial.println("Smart Door Alert – Hardware Test Started");
+  Serial.println("Move the magnet towards/away from the reed switch to see status updates.");
 }
 
 void loop() {
+  // Read current state of the reed switch (LOW = closed, HIGH = open)
   int doorState = digitalRead(REED_PIN);
 
-  if (doorState == LOW) {  
-    // Magnet touching reed → door closed
-    digitalWrite(LED_PIN, LOW);
+  if (doorState == LOW) {
+    // Magnet touching reed → switch closed → door CLOSED
+    digitalWrite(LED_PIN, LOW);     // LED OFF for closed door
     Serial.println("Door CLOSED");
   } else {
-    // Magnet separated → door open
-    digitalWrite(LED_PIN, HIGH);
+    // Magnet separated → switch open → door OPEN
+    digitalWrite(LED_PIN, HIGH);    // LED ON for open door
     Serial.println("Door OPEN");
   }
 
-  delay(300);
+  delay(300); // Small delay so the Serial Monitor is readable
 }
