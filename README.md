@@ -140,12 +140,12 @@ pip install paho-mqtt
 ```
 
 ### **B. Flash the ESP8266 Firmware**
-i. Open Arduino IDE
-ii. Go to:
+### i. Open Arduino IDE
+### ii. Go to:
     /software/ESP8266 code
-iii. Select board: NodeMCU 1.0 (ESP8266)
-iv. Select correct COM port
-v. Upload firmware
+### iii. Select board: NodeMCU 1.0 (ESP8266)
+### iv. Select correct COM port
+### v. Upload firmware
 ### vi. Open Serial Monitor → you should see:
 - "WiFi connected"
 - "MQTT connected"
