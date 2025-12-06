@@ -189,25 +189,18 @@ Move magnet toward/away from reed switch.
 
 /hardware
     
-    test photos and notes
+     notes.txt
 
 /software
     
-    door_node_test/
+    Arduino test code/
     
     ESP8266 code/
     
-    subscriber.py
+    Subscriber.py
     
     ui_plan.txt
 
-/data
-   
-    (future: door history logs)
-
-/tests
-    
-    MQTT connection tests, hardware validation tests
 
 README.md
 
