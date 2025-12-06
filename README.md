@@ -1,76 +1,202 @@
-# Smart Door Alert – Capstone Project (Check-In 1)
+# Smart Door Alert – IoT Capstone Project (Check-In 2 Updated)
 
-## Team Members & Roles
-| Name | Primary Role | Secondary Role |
-|--------|-------------------------------|-------------------------------|
-| Castro N. Fokou | Hardware & Sensor Setup | Documentation |
-| Rupesh Nepal | UI & API Design | Storage & MQTT Integration |
-Rupesh will also help with testing the UI and REST API functions.
----
+## 1. Problem Description
+In student housing and small shared environments, doors are often left open unintentionally.  
+This leads to:
 
-## Problem Description
-People often forget to close doors, causing security, privacy, and energy-loss issues in shared rooms, student housing, and small indoor environments. There is no affordable or simple real-time way to know if a door has been left open unless someone is present. Our goal is to solve this through a small IoT-based monitoring solution that provides awareness and safety.
+- Security risks  
+- Loss of privacy  
+- Heat and energy loss  
+- No awareness when someone enters or leaves  
 
----
+There is currently no simple, low-cost system that provides real-time door status notifications.
 
-## Solution Description
-We plan to build a Smart Door Alert system using an ESP32 and a magnetic reed switch to detect the open/closed status of a door. MQTT will be used for live state updates, while REST will be used to access stored history. A simple UI will display the status to the user. This system is low-cost, easy to use, and helps improve awareness and safety.
+Our prototype solves this using a **sensor + microcontroller + MQTT messaging** system.
 
 ---
 
-## API Paradigms
-| API | Purpose |
-|------|-----------------------------|
-| MQTT | Real-time door status updates |
-| REST | Retrieve stored door status history |
+## 2. Solution Overview
+We built a **Smart Door Alert System** using:
+
+- **ESP8266 NodeMCU** – main controller  
+- **Magnetic Reed Switch** – detects OPEN/CLOSED  
+- **MQTT (Publish/Subscribe)** – real-time communication  
+- **Python UI Subscriber** – displays door events instantly  
+
+This creates a complete end-to-end path:
+
+**Door Sensor → ESP8266 → MQTT Broker → Python UI**
+
+This fully satisfies the *walking skeleton* requirement for Check-In 2.
 
 ---
 
-## Planned Hardware
+## 3. Hardware Components
+
 | Component | Purpose |
-|------------|---------|
-|  ESP8266 NodeMCU | IoT controller |
-| Magnetic Reed Switch | Detect open/closed state |
-| LED or Buzzer | Local alert output |
-| Jumper wires | Connection |
+|----------|---------|
+| **ESP8266 NodeMCU** | Connects WiFi, reads sensor, publishes MQTT messages |
+| **Magnetic Reed Switch** | Detects OPEN (HIGH) / CLOSED (LOW) |
+| **LED** | Local visual indicator |
+| **Jumper wires / breadboard** | Prototype wiring |
 
 ---
-### Software Components
-- **Device Firmware**: Arduino-based ESP8266 code (PubSubClient library)
-- **MQTT Broker**: test.mosquitto.org (public broker for testing)
-- **Monitoring UI**: Python script using Paho MQTT client
-- **Data Flow**: Sensor → ESP8266 → MQTT Broker → Python UI
 
-  2. **Software Requirements**:
-   - Arduino IDE with ESP8266 board support
-   - Python 3.6+
-   - Required libraries:
-     ```bash
-     # For ESP8266 (via Arduino Library Manager)
-     - PubSubClient by Nick O'Leary
-     
-     # For Python UI
-     pip install paho-mqtt
-     ```
+## 4. Wiring Diagram (Explanation Only)
 
-## Planned Repository Structure
+### Pins Used
+- **D2** → Reed switch signal  
+- **3V3** → Reed switch VCC  
+- **G** → Ground  
+- **D5** → LED output  
+
+### Logic
+- Reed = **LOW** → Door CLOSED  
+- Reed = **HIGH** → Door OPEN  
+
+A labelled wiring sketch is stored in:
+/Documentation/wiring_diagram.png
+
+
+---
+
+## 5. Architecture Diagram
+
+A clear high-level architecture diagram is stored in:
+/Documentation/architecture.png
+
+### Data Flow Description
+1. Reed switch changes state  
+2. ESP8266 reads input  
+3. Publishes `"open"` or `"closed"` to MQTT topic:
+
+   **smartdoor/castro_rupesh/status**
+
+4. Mosquitto broker receives message  
+5. Python subscriber prints real-time updates  
+
+This accurately represents the walking prototype.
+
+---
+
+## 6. Software Components
+
+### **1. ESP8266 Firmware**
+Located at:
+/software/ESP8266 code
+
+
+Functions:
+- Connects to WiFi  
+- Connects to MQTT  
+- Reads door sensor  
+- Controls LED  
+- Publishes **open / closed** messages  
+
+---
+
+### **2. Arduino Test Code**
+Located at:
+/software/door_node_test
+
+Purpose:
+- Validate sensor and LED before adding MQTT logic.
+
+---
+
+### **3. Python MQTT Subscriber (UI)**
+Located at:
+/software/subscriber.py
+
+Displays real-time door status updates received from MQTT.
+
+---
+
+## 7. MQTT Topics & API Notes
+
+### **MQTT Topic Used**
+smartdoor/castro_rupesh/status
+"open"
+"closed"
+
+
+This is documented clearly for future expansion such as storing logs or building a web interface.
+
+---
+
+## 8. Setup Instructions (Required for Full Marks)
+
+These steps allow *any student* to run the project end-to-end.
+
+### **A. Prerequisites**
+#### Software
+- Arduino IDE (with ESP8266 board installed)  
+- Python 3.8+  
+
+Install MQTT library:
+
+```bash
+pip install paho-mqtt
+
+### **B. Flash the ESP8266 Firmware**
+1. Open Arduino IDE
+2. Go to:
+    /software/ESP8266 code
+3. Select board: NodeMCU 1.0 (ESP8266)
+4. Select correct COM port
+5. Upload firmware
+### 6. Open Serial Monitor → you should see:
+- "WiFi connected"
+- "MQTT connected"
+- "Door OPEN" / "Door CLOSED"
+
+
+### **C. Run the Python UI**
+
+Open terminal and run:
+cd software
+python subscriber.py
+
+Expected output:
+
+Connected to MQTT Broker
+Door Status Update → open
+Door Status Update → closed
+
+
+### **D. Test the System
+Move magnet toward/away from reed switch.
+### You should see:
+
+- LED turns ON/OFF
+- ESP8266 Serial Monitor updates
+- Python subscriber prints updates
+- All events appear instantly (real-time)
+
+
+## 9. Repository Structure
+
 /Documentation
-    - Stores wiring sketch and project diagrams.
+    wiring_diagram.png
+    architecture.png
 
 /hardware
-    - Contains ESP32 code and sensor-related files.
+    test photos and notes
 
 /software
-    - Contains UI files, MQTT subscriber code, and REST API logic.
+    Arduino test code/
+    ESP8266 code/
+    subscriber.py
+    ui_plan.txt
 
 /data
-    - Will be used for storing logs or history data.
+    (future: door history logs)
 
 /tests
-    - Will contain any scripts used for testing the system.
+    MQTT connection tests, hardware validation tests
 
 README.md
-    - Main documentation file for the project.
-
 api_plan.txt
-    - Notes for MQTT topics and REST API endpoints.
+
+
+
