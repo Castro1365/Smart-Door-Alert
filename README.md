@@ -155,6 +155,7 @@ pip install paho-mqtt
 ### **C. Run the Python UI**
 
 Open terminal and run:
+
 cd software
 
 python subscriber.py
@@ -188,7 +189,7 @@ Move magnet toward/away from reed switch.
     test photos and notes
 
 /software
-    Arduino test code/
+    door_node_test/
     ESP8266 code/
     subscriber.py
     ui_plan.txt
