@@ -156,12 +156,15 @@ pip install paho-mqtt
 
 Open terminal and run:
 cd software
+
 python subscriber.py
 
 Expected output:
 
 Connected to MQTT Broker
+
 Door Status Update → open
+
 Door Status Update → closed
 
 
