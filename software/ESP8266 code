@@ -1,16 +1,35 @@
+/******************************************************************************
+ * Smart Door Alert – ESP8266 Firmware
+ * 
+ * Description:
+ *   This firmware reads a magnetic reed switch connected to pin D2 to detect 
+ *   whether a door is OPEN or CLOSED. It controls an LED on pin D5 to visually 
+ *   show the door status, and publishes the same information to an MQTT broker 
+ *   using the topic: smartdoor/castro_rupesh/status.
+ * 
+ * Data Flow:
+ *   Reed Sensor → ESP8266 → MQTT Broker → Python Subscriber UI
+ * 
+ * Walking Prototype Purpose:
+ *   This code forms the device side of the walking prototype, sending real-time 
+ *   OPEN/CLOSED messages to demonstrate an end-to-end IoT flow.
+ *
+ * Author: Castro Fokou & Rupesh Nepal
+ ******************************************************************************/
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-// --------- PINS ----------
-const int REED_PIN = D2;  // Reed switch module S
-const int LED_PIN  = D5;  // LED
+// --------------------- PIN DEFINITIONS ---------------------
+const int REED_PIN = D2;   // Reed switch signal pin
+const int LED_PIN  = D5;   // LED indicator pin
 
-// --------- WIFI ----------
+// --------------------- WIFI CREDENTIALS --------------------
 const char* WIFI_SSID     = "iPhone";
 const char* WIFI_PASSWORD = "Rupesh98";
 
-// --------- MQTT ----------
-const char* MQTT_SERVER   = "test.mosquitto.org";  // or your laptop broker IP
+// --------------------- MQTT SETTINGS ------------------------
+const char* MQTT_SERVER   = "test.mosquitto.org";  
 const int   MQTT_PORT     = 1883;
 const char* MQTT_CLIENTID = "SmartDoorNodeMCU_Castro";
 const char* MQTT_TOPIC    = "smartdoor/castro_rupesh/status";
@@ -18,75 +37,103 @@ const char* MQTT_TOPIC    = "smartdoor/castro_rupesh/status";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+// Tracks previous door state so we publish only when it changes
 int lastDoorState = -1;
 
+
+// ---------------------------------------------------------------------------
+// Connect to WiFi network
+// Shows dots "....." in serial monitor while connecting
+// ---------------------------------------------------------------------------
 void connectWiFi() {
   Serial.print("Connecting to WiFi");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
+
   Serial.println("\nWiFi connected");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
+
+// ---------------------------------------------------------------------------
+// Connect to MQTT broker
+// Keeps trying until the connection is successful
+// ---------------------------------------------------------------------------
 void connectMQTT() {
   while (!client.connected()) {
     Serial.print("Connecting to MQTT...");
+
     if (client.connect(MQTT_CLIENTID)) {
       Serial.println("connected");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
-      Serial.println(" try again in 2 seconds");
+      Serial.println(" – retrying in 2 seconds");
       delay(2000);
     }
   }
 }
 
+
+// ---------------------------------------------------------------------------
+// Setup: initializes serial, pins, WiFi, and MQTT
+// ---------------------------------------------------------------------------
 void setup() {
   Serial.begin(115200);
-  pinMode(REED_PIN, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);
 
-  connectWiFi();
+  pinMode(REED_PIN, INPUT_PULLUP);   // Reed switch uses pull-up logic
+  pinMode(LED_PIN, OUTPUT);          // LED shows door state
+  digitalWrite(LED_PIN, LOW);        // LED OFF initially
+
+  connectWiFi();                     // Start WiFi connection
   client.setServer(MQTT_SERVER, MQTT_PORT);
-  connectMQTT();
+  connectMQTT();                     // Start MQTT connection
 
   Serial.println("Smart Door Alert MQTT started");
 }
 
+
+// ---------------------------------------------------------------------------
+// Main loop: reads sensor, updates LED, and publishes MQTT state
+// ---------------------------------------------------------------------------
 void loop() {
+  // Reconnect to MQTT if disconnected
   if (!client.connected()) {
     connectMQTT();
   }
   client.loop();
 
+  // Read magnetic reed switch
   int doorState = digitalRead(REED_PIN);
 
+  // Only publish when the value actually changes
   if (doorState != lastDoorState) {
     lastDoorState = doorState;
 
     const char* msg;
+
     if (doorState == LOW) {
-      // closed
+      // Magnet touching sensor → door is CLOSED
       msg = "closed";
-      digitalWrite(LED_PIN, LOW);
+      digitalWrite(LED_PIN, LOW);  
       Serial.println("Door CLOSED");
     } else {
-      // open
+      // Magnet moved away → door is OPEN
       msg = "open";
       digitalWrite(LED_PIN, HIGH);
       Serial.println("Door OPEN");
     }
 
+    // Send MQTT message
     client.publish(MQTT_TOPIC, msg);
     Serial.print("Published: ");
     Serial.println(msg);
   }
 
-  delay(100);
+  delay(100);  // Small debounce and stability delay
 }
