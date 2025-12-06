@@ -124,7 +124,7 @@ This is documented clearly for future expansion such as storing logs or building
 
 ---
 
-## 8. Setup Instructions (Required for Full Marks)
+## 8. Setup Instructions 
 
 These steps allow *any student* to run the project end-to-end.
 
