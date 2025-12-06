@@ -174,29 +174,7 @@ Move magnet toward/away from reed switch.
 - All events appear instantly (real-time)
 
 
-## 9. Repository Structure
 
-/Documentation
-    wiring_diagram.png
-    architecture.png
-
-/hardware
-    test photos and notes
-
-/software
-    Arduino test code/
-    ESP8266 code/
-    subscriber.py
-    ui_plan.txt
-
-/data
-    (future: door history logs)
-
-/tests
-    MQTT connection tests, hardware validation tests
-
-README.md
-api_plan.txt
 
 
 
