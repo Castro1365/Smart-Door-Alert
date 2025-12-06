@@ -137,15 +137,16 @@ Install MQTT library:
 
 ```bash
 pip install paho-mqtt
+```
 
 ### **B. Flash the ESP8266 Firmware**
-1. Open Arduino IDE
-2. Go to:
+i. Open Arduino IDE
+ii. Go to:
     /software/ESP8266 code
-3. Select board: NodeMCU 1.0 (ESP8266)
-4. Select correct COM port
-5. Upload firmware
-### 6. Open Serial Monitor → you should see:
+iii. Select board: NodeMCU 1.0 (ESP8266)
+iv. Select correct COM port
+v. Upload firmware
+### vi. Open Serial Monitor → you should see:
 - "WiFi connected"
 - "MQTT connected"
 - "Door OPEN" / "Door CLOSED"
@@ -164,16 +165,39 @@ Door Status Update → open
 Door Status Update → closed
 
 
-### **D. Test the System
+### **D. Test the System**
 Move magnet toward/away from reed switch.
-### You should see:
 
+### You should see:
 - LED turns ON/OFF
 - ESP8266 Serial Monitor updates
 - Python subscriber prints updates
 - All events appear instantly (real-time)
 
 
+## 9. Repository Structure
+
+/Documentation
+    wiring_diagram.png
+    architecture.png
+
+/hardware
+    test photos and notes
+
+/software
+    Arduino test code/
+    ESP8266 code/
+    subscriber.py
+    ui_plan.txt
+
+/data
+    (future: door history logs)
+
+/tests
+    MQTT connection tests, hardware validation tests
+
+README.md
+api_plan.txt
 
 
 
