@@ -182,25 +182,35 @@ Move magnet toward/away from reed switch.
 ## 9. Repository Structure
 
 /Documentation
-    wiring_diagram.png
+    
+    wiring_diagram.png 
+    
     architecture.png
 
 /hardware
+    
     test photos and notes
 
 /software
+    
     door_node_test/
+    
     ESP8266 code/
+    
     subscriber.py
+    
     ui_plan.txt
 
 /data
+   
     (future: door history logs)
 
 /tests
+    
     MQTT connection tests, hardware validation tests
 
 README.md
+
 api_plan.txt
 
 
