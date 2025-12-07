@@ -1,1 +1,70 @@
-MQTT for real-time status, REST for history requests
+API Plan – Smart Door Alert System
+
+1. MQTT API (Real-Time Updates)
+--------------------------------
+Purpose:
+    Provides instant door status updates from the ESP8266 to subscribers.
+
+Broker:
+    test.mosquitto.org
+
+Topic:
+    smartdoor/castro_rupesh/status
+
+Payload Format:
+    "open"   – door is opened (reed switch HIGH)
+    "closed" – door is closed (reed switch LOW)
+
+Publishing Device:
+    ESP8266 NodeMCU
+
+Subscribers:
+    Python UI subscriber (Subscriber.py)
+    Future: Web dashboard, mobile app
+
+Reason for Using MQTT:
+    - Lightweight and fast
+    - Perfect for real-time sensor events
+    - Supports multiple subscribers
+
+--------------------------------
+
+2. REST API (Planned for Final Prototype)
+--------------------------------
+Purpose:
+    Will store and retrieve historical door status events.
+
+Possible Endpoints (Planned):
+
+    GET /api/door/history
+        - Returns list of timestamps and door states (open/closed)
+
+    POST /api/door/event
+        - Stores a new door event in the database
+        - Request body example:
+            {
+                "timestamp": "2025-02-12T15:32:10Z",
+                "state": "open"
+            }
+
+Data to Store:
+    - Timestamp
+    - Door state
+    - Optional: device ID, signal strength
+
+Reason for Using REST:
+    - Good for storing historical logs
+    - Easy for dashboards or mobile apps to consume
+    - Complements MQTT (MQTT = live data, REST = history data)
+
+--------------------------------
+
+3. Combined API Flow
+--------------------------------
+1. Door sensor changes state  
+2. ESP8266 publishes MQTT message  
+3. Subscriber receives message in real time  
+4. (Planned) REST API stores event for future history tracking  
+
+MQTT = Live  
+REST = Storage  
