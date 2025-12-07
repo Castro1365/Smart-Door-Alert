@@ -185,10 +185,10 @@ Move magnet toward/away from reed switch.
 
     architecture.png
     
+    check_in 2 api picture.jpg
+    
     wiring_diagram.txt 
     
-    check_in 2 api picture.jpg
-
 /hardware
     
      notes.txt
