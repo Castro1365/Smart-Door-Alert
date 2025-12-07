@@ -182,10 +182,12 @@ Move magnet toward/away from reed switch.
 ## 9. Repository Structure
 
 /Documentation
-    
-    wiring_diagram.png 
-    
+
     architecture.png
+    
+    wiring_diagram.txt 
+    
+    check_in 2 api picture.jpg
 
 /hardware
     
@@ -193,9 +195,9 @@ Move magnet toward/away from reed switch.
 
 /software
     
-    Arduino test code/
+    Arduino test code
     
-    ESP8266 code/
+    ESP8266 code
     
     Subscriber.py
     
