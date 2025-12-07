@@ -1,2 +1,50 @@
-The following wiring diagram illustrates the complete hardware setup for the Smart Door Monitoring System.
-It shows how the ESP32, Magnetic Reed Switch, LED indicators, and power connections are connected.
+WIRING DIAGRAM – Smart Door Alert System
+
+This wiring diagram illustrates the complete hardware setup for the Smart Door Monitoring System.
+It shows how the ESP8266 NodeMCU, Magnetic Reed Switch, LED indicator, and power connections are wired.
+
+-------------------------------------------------------
+1. Components Used
+-------------------------------------------------------
+- ESP8266 NodeMCU
+- Magnetic Reed Switch Module (3-pin: S, +, -)
+- LED (with 330Ω resistor)
+- Jumper wires
+- USB power cable
+
+-------------------------------------------------------
+2. Pin Connections
+-------------------------------------------------------
+
+A) Reed Switch Module
+- S (Signal)  → D2 on ESP8266
+- + (VCC)     → 3V3 on ESP8266
+- - (GND)     → G on ESP8266
+
+Logic:
+- Reed pin LOW  → Door CLOSED (magnet touching)
+- Reed pin HIGH → Door OPEN (magnet separated)
+
+B) LED Indicator
+- LED positive (long leg) → 330Ω resistor → D5 on ESP8266
+- LED negative (short leg) → GND on ESP8266
+
+LED Behavior:
+- LED ON  → Door OPEN
+- LED OFF → Door CLOSED
+
+-------------------------------------------------------
+3. Power Setup
+-------------------------------------------------------
+- ESP8266 is powered through USB cable
+- Reed switch and LED draw power from the ESP8266 (3.3V + GND)
+
+-------------------------------------------------------
+4. Summary
+-------------------------------------------------------
+This wiring configuration supports:
+- Live door state detection through the reed switch
+- Visual door state indication using LED
+- Safe operation using correct voltage and resistor protection
+
+Anyone following this wiring can reproduce the hardware portion of the Smart Door Alert System.
