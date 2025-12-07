@@ -42,7 +42,7 @@ This fully satisfies the *walking skeleton* requirement for Check-In 2.
 
 ---
 
-## 4. Wiring Diagram (Explanation Only)
+## 4. Wiring Diagram 
 
 ### Pins Used
 - **D2** → Reed switch signal  
