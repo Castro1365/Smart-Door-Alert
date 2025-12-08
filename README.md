@@ -204,6 +204,184 @@ Move magnet toward/away from reed switch.
     ui_plan.txt
 
 
+---
+
+
+## 10. REST API (Final Submission Requirement)
+
+We added a REST API to allow users or future interfaces to retrieve stored door history logged by the Python subscriber.
+
+### API Server Details
+
+- File: /software/rest_api.py
+
+- Framework: Flask
+
+- Data Source: /data/events.csv (auto-generated when subscriber runs)
+
+- API Key Required:
+  ```bash
+  X-API-Key: smartdoor123
+
+
+----
+
+
+## 11. Logging System
+
+The Python MQTT Subscriber now automatically logs every event into:
+```bash
+/data/events.csv
+```
+Format:
+
+``` bash
+timestamp,status
+2025-12-07T23:01:10,open
+2025-12-07T23:01:15,closed
+```
+
+### This allows:
+
+- REST API history
+
+- Debugging
+
+- Future dashboards
+
+
+---
+
+
+## 12. Evidence Screenshots
+
+1. ESP8266 Serial Monitor Output:
+   ```bash
+   /Documentation/serial_output.png
+   ```
+
+2. Python Subscriber Output:
+   ```bash
+   /Documentation/subscriber_output.png
+   ```
+
+---
+
+
+## 13. 13. Results & Observations
+
+- The system successfully detects door OPEN/CLOSED states
+
+- MQTT updates appear instantly (<100 ms)
+
+- The LED provides clear local feedback
+
+- Python subscriber displays updates in real time
+
+- REST API correctly serves history logs
+
+- CSV log file grows automatically based on events
+
+This confirms that the full IoT chain works:
+
+Sensor → ESP8266 → MQTT Broker → Python UI → REST API → CSV Storage
+
+
+
+---
+
+
+## 14. Limitations
+
+- Requires continuous WiFi connection
+
+- Uses a public MQTT broker (may have delays)
+
+- No enclosure for stability
+
+- REST API runs only locally (not cloud-hosted)
+
+- No web/mobile dashboard yet
+   
+
+--- 
+
+
+## 15. Future Improvements
+
+- Build a Web Dashboard (HTML/JS or Flask)
+
+- Add push notifications (SMS / email / app)
+
+- Save events in SQLite / Firebase
+
+- Add buzzer alert inside room
+
+- Create a 3D-printed enclosure
+
+- Add authentication and encryption for production
+
+
+
+
+---
+
+
+## 16. Team Contributions
+
+### Castro Fokou
+
+- Wiring and hardware setup
+
+- ESP8266 firmware development
+
+- Python Subscriber with CSV logging
+
+- REST API implementation
+
+- Full README documentation
+
+- Testing and debugging
+
+
+### Rupesh Nepal
+
+- Architecture diagram
+
+- API diagram for Check-In 2
+
+- UI planning (ui_plan.txt)
+
+- API plan documentation
+
+- README updates for Check-In sections
+
+### Both Members
+- Hardware testing
+  
+- Running MQTT subscriber
+
+- final presentation preparation
+
+- Repository organization
+
+
+--- 
+
+
+## 17. Check-In 2 Progress Summary (for completeness)
+
+- End-to-end working prototype
+
+- MQTT publishing and subscription
+
+- Wiring + diagrams completed
+
+- Repository structured
+
+- Both members contributed code + documentation
+
+
 README.md
 
 api_plan.txt
