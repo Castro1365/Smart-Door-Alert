@@ -1,62 +1,78 @@
 """
-Smart Door Alert – MQTT Subscriber
-----------------------------------
+Python MQTT Subscriber + Data Logger for Smart Door Alert
 
-This Python script listens for door status updates ("open" / "closed")
-published by the ESP8266 firmware. It connects to the public Mosquitto
-broker and prints live door events to the console.
-
-This script demonstrates the UI/console portion of the walking skeleton:
-Device → MQTT Broker → Subscriber Output.
-
-Run this file using:
-    python subscriber.py
-Ensure the ESP8266 is powered and publishing before running.
+- Connects to public MQTT broker (test.mosquitto.org)
+- Subscribes to door status topic: smartdoor/castro_rupesh/status
+- Prints live updates to the console
+- Logs each event (timestamp + status) into ../data/events.csv
+  -> This file is later used by the REST API for history queries.
 """
+
+import os
+import csv
+from datetime import datetime
 
 import paho.mqtt.client as mqtt
 
-# -----------------------------
-# MQTT SETTINGS
-# -----------------------------
-BROKER = "test.mosquitto.org"              # Public MQTT broker
-PORT = 1883                                # Default MQTT port
-TOPIC = "smartdoor/castro_rupesh/status"   # Topic where ESP8266 publishes door status
+BROKER = "test.mosquitto.org"
+TOPIC = "smartdoor/castro_rupesh/status"
+
+# Path to ../data/events.csv (relative to this file)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+EVENTS_FILE = os.path.join(DATA_DIR, "events.csv")
 
 
-# -----------------------------
-# CALLBACKS
-# -----------------------------
+def ensure_data_file():
+    """Create the /data folder and CSV file with header if they do not exist."""
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    if not os.path.exists(EVENTS_FILE):
+        with open(EVENTS_FILE, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["timestamp", "status"])  # CSV header row
+
+
+def log_event(status: str):
+    """
+    Append a new door event to events.csv with current timestamp.
+    This provides structured storage for later REST queries.
+    """
+    ensure_data_file()
+
+    now = datetime.now().isoformat(timespec="seconds")
+    with open(EVENTS_FILE, mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([now, status])
+
 
 def on_connect(client, userdata, flags, rc):
-    """Called when the client successfully connects to the broker."""
-    print("Connected to MQTT Broker (RC={})".format(rc))
+    print("Connected to MQTT Broker with result code:", rc)
     client.subscribe(TOPIC)
     print(f"Subscribed to topic: {TOPIC}")
+    ensure_data_file()
 
 
 def on_message(client, userdata, msg):
-    """Called whenever a message is received on a subscribed topic."""
-    door_status = msg.payload.decode()
-    print(f"Door Status Update → {door_status}")
+    status = msg.payload.decode().strip()
+    print(f"Door Status Update -> {status}")
+
+    # Log to CSV for history
+    log_event(status)
 
 
-# -----------------------------
-# CLIENT SETUP
-# -----------------------------
+def main():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-client = mqtt.Client()
+    print("Connecting to broker...")
+    client.connect(BROKER, 1883, 60)
 
-# Attach callback functions
-client.on_connect = on_connect
-client.on_message = on_message
+    print(f"Listening on topic: {TOPIC}")
+    print(f"Logging events to: {EVENTS_FILE}")
+    client.loop_forever()
 
-print("Connecting to MQTT broker...")
-client.connect(BROKER, PORT, keepalive=60)
 
-print(f"Listening for messages on: {TOPIC}\n")
-
-# -----------------------------
-# START LOOP (BLOCKING)
-# -----------------------------
-client.loop_forever()
+if __name__ == "__main__":
+    main()
