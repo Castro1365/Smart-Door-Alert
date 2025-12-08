@@ -1,4 +1,4 @@
-# Smart Door Alert – IoT Capstone Project (Check-In 2 Updated)
+# Smart Door Alert – IoT Capstone Project
 
 ## 1. Problem Description
 In student housing and small shared environments, doors are often left open unintentionally.  
