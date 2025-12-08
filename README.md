@@ -27,7 +27,6 @@ This creates a complete end-to-end path:
 
 **Door Sensor → ESP8266 → MQTT Broker → Python UI**
 
-This fully satisfies the *walking skeleton* requirement for Check-In 2.
 
 ---
 
